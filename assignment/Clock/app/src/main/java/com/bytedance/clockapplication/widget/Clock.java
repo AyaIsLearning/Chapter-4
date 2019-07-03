@@ -211,9 +211,7 @@ public class Clock extends View {
         int distance = mCenterX - (int)(mWidth * 0.1f);
 
         for (int i = 0; i < FULL_ANGLE; i += 30) {
-
             int hour;
-
             if(i <= 60){
                 hour = 3 - i/30;
             }

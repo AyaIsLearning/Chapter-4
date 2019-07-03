@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.bytedance.clockapplication.widget.Clock;
 
+import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,27 +31,18 @@ public class MainActivity extends AppCompatActivity {
                 mClockView.setShowAnalog(!mClockView.isShowAnalog());
             }
         });
-
-///        timer.schedule(timerTask,0,1000);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true){
-                    long start = System.currentTimeMillis();
                     try {
                         Message msg = new Message();
                         msg.what = 1;
                         mHandler.sendMessage(msg);
                         Thread.sleep(1000);
-
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                   /* while((System.currentTimeMillis()-start)<=1000){
-                        try {
-                            Thread.sleep(2);
-                        }catch (Exception e){}
-                    }*/
                 }
             }
         }).start();
@@ -58,23 +50,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    Handler mHandler = new Handler() {
+    private final MyHandler mHandler = new MyHandler(this);
+
+    private static class MyHandler extends Handler {
+        private final WeakReference<MainActivity> mActivity;
+
+        public MyHandler(MainActivity activity) {
+            mActivity = new WeakReference<MainActivity>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == 1){
-                mClockView.setShowAnalog(mClockView.isShowAnalog());
+            MainActivity activity = mActivity.get();
+            if (activity != null) {
+                if (msg.what == 1){
+                    activity.mClockView.setShowAnalog(activity.mClockView.isShowAnalog());
+                }
+                super.handleMessage(msg);
             }
-            super.handleMessage(msg);
         }
-    };
+    }
 
-    /*Timer timer = new Timer();
-    TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            Message message = new Message();
-            message.what = 1;
-            mHandler.sendMessage(message);
-        }
-    };*/
+
 }
