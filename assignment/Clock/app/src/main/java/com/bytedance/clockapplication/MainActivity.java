@@ -36,10 +36,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 while (true){
                     try {
-                        Message msg = new Message();
-                        msg.what = 1;
-                        mHandler.sendMessage(msg);
                         Thread.sleep(1000);
+                        Message msg = new Message();
+                        mHandler.sendMessage(msg);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -63,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             MainActivity activity = mActivity.get();
             if (activity != null) {
-                if (msg.what == 1){
-                    activity.mClockView.setShowAnalog(activity.mClockView.isShowAnalog());
-                }
+                activity.mClockView.setShowAnalog(activity.mClockView.isShowAnalog());
                 super.handleMessage(msg);
             }
         }
